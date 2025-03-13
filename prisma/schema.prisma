@@ -1,0 +1,151 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model Order {
+  id                    String    @id @default(uuid())
+  userId                String
+  order                 String
+  estado                String
+  tipoInspeccion        String
+  fechaProgramada       String
+  procesoProduccion     String
+  especificacionProceso String
+  muestra               String
+  cliente               String
+  fig                   String
+  proyecto              String
+  area                  String
+  designacion           String
+  norma                 String
+  lote                  String
+  nivelInspeccion       String
+  planMuestra           String
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  contacts              Contact[]
+  tools                 Tool[]
+  events                Event[]
+}
+
+model User {
+  id        String   @id @default(uuid())
+  userId    String
+  name      String
+  rol       String
+  code      String
+  function  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Contact {
+  id        String   @id @default(uuid())
+  orderId   String?
+  name      String
+  role      String
+  code      String
+  function  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  order     Order?   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  userId    String?
+
+  @@index([orderId])
+}
+
+model Tool {
+  id          String   @id @default(uuid())
+  orderId     String?
+  name        String
+  code        String
+  responsible String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  order       Order?   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  userId      String?
+
+  @@index([orderId])
+}
+
+model Event {
+  id         String   @id @default(uuid())
+  orderId    String
+  title      String
+  start      DateTime
+  allDay     Boolean
+  timeFormat String
+  createdAt  DateTime @default(now())
+  updateAt   DateTime @updatedAt
+  order      Order    @relation(fields: [orderId], references: [id])
+  userId     String?
+
+  @@index([orderId])
+}
+
+model Amef {
+  id                          String   @id @default(uuid())
+  order                       String
+  especificacionProceso       String
+  procesoProduccion           String
+  fig                         String
+  proyecto                    String
+  cliente                     String
+  elemento                    String
+  fechaDeteccion              String
+  nivelInspeccion             String
+  planMuestra                 String
+  modoFallo                   String
+  efecto                      String
+  causaModoFallo              String
+  medidasEnsayo               String
+  ocurrencia                  String
+  gravedad                    String
+  deteccion                   String
+  npr                         String
+  estadoNPR                   String
+  codigoColaboradorCT         String
+  codigoResponsableInspeccion String
+  accionImplementada          String
+  tareaRealizada              String?
+  fechaValidacionCorreccion   String
+  costoReproceso              String
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+}
+
+model MedidasEnsayo {
+  id          String   @id @default(uuid())
+  descripcion String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model TareaRealizada {
+  id          String   @id @default(uuid())
+  descripcion String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ModosFallo {
+  id             String  @id @default(uuid())
+  userId         String?
+  modoFallo      String
+  codigo         String
+  efecto         String
+  causaModoFallo String
+  gravedad       String
+  ocurrencia     String
+  deteccion      String
+  npr            String
+  estadoNPR      String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
