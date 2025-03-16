@@ -83,8 +83,8 @@ export function DataTable<TData, TValue>({
                 <input
                     type="date"  // Cambiado a 'date' para poder seleccionar la fecha
                     placeholder="Filtrar por fecha"
-                    value={(table.getColumn("fechaProgramada")?.getFilterValue() as string) ?? ""}
-                    onChange={(event) => table.getColumn("fechaProgramada")?.setFilterValue(event.target.value)}
+                    value={(table.getColumn("fechaPlanificada")?.getFilterValue() as string) ?? ""}
+                    onChange={(event) => table.getColumn("fechaPlanificada")?.setFilterValue(event.target.value)}
                     className="border p-2 rounded"
                 />
             </div>

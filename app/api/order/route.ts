@@ -12,8 +12,7 @@ export async function GET(req: Request) {
         // Obtener todas las órdenes sin filtrar por userId
         const orders = await db.order.findMany({
             include: {
-                contacts: true,
-                tools: true,
+                responsables: true,
                 events: true
             },
             orderBy: {
@@ -37,7 +36,7 @@ export async function POST(req: Request) {
             return new NextResponse("No autorizado", { status: 401 });
         }
 
-        if (!body.order || !/^ODI-\d{5}$/.test(body.order)) {
+        if (!body.order || !/^ODC-\d{5}$/.test(body.order)) {
             return new NextResponse("Formato de orden inválido", { status: 400 });
         }
 
@@ -57,20 +56,16 @@ export async function POST(req: Request) {
                 userId,
                 order: body.order,
                 estado: body.estado,
-                tipoInspeccion: body.tipoInspeccion,
-                fechaProgramada: body.fechaProgramada,
-                procesoProduccion: body.procesoProduccion,
-                especificacionProceso: body.especificacionProceso,
-                muestra: body.muestra,
                 cliente: body.cliente,
-                fig: body.fig,
                 proyecto: body.proyecto,
-                area: body.area,
+                fig: body.fig,
+                codigoElemento: body.codigoElemento,
                 designacion: body.designacion,
-                norma: body.norma,
-                lote: body.lote,
-                nivelInspeccion: body.nivelInspeccion,
-                planMuestra: body.planMuestra
+                codigoAplicable: body.codigoAplicable,
+                centroTrabajo: body.centroTrabajo,
+                qc: body.qc,
+                areaInspeccionada: body.areaInspeccionada,
+                fechaPlanificada: body.fechaPlanificada,
             }
         });
 

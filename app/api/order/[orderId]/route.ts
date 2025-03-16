@@ -26,7 +26,7 @@ export async function PATCH(
 
         // Enviar actualización a Power Automate
         try {
-            const response = await fetch("https://prod-182.westus.logic.azure.com:443/workflows/da1509855ed8448f9701dc903e3b915b/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=zJinWQKzstenjkOmcUdmkZDOU7tVH38e0naJcoe4Ctc", {
+            const response = await fetch("##", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -72,16 +72,6 @@ export async function DELETE(req: Request, {params}: {params: {orderId: string}}
             return new NextResponse("Orden no encontrada", {status: 404});
         }
 
-        // Primero, desasociar los instrumentos de la orden
-        await db.tool.updateMany({
-            where: {
-                orderId: orderId
-            },
-            data: {
-                orderId: null
-            }
-        });
-
         // Luego eliminar la orden de la base de datos
         const deletedOrder = await db.order.delete({
             where: {
@@ -91,7 +81,7 @@ export async function DELETE(req: Request, {params}: {params: {orderId: string}}
 
         // Finalmente, notificar a Power Automate para eliminar el registro en SharePoint
         try {
-            const response = await fetch("https://prod-182.westus.logic.azure.com:443/workflows/da1509855ed8448f9701dc903e3b915b/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=zJinWQKzstenjkOmcUdmkZDOU7tVH38e0naJcoe4Ctc", {
+            const response = await fetch("#", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

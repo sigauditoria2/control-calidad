@@ -15,7 +15,7 @@ export async function GET(
         const { orderNumber } = params;
 
         // Verificar el formato del número
-        if (!orderNumber.match(/^ODI-\d{5}$/)) {
+        if (!orderNumber.match(/^ODC-\d{5}$/)) {
             return new NextResponse(
                 JSON.stringify({ 
                     error: "Formato de número inválido",

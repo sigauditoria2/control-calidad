@@ -41,29 +41,29 @@ import { Separator } from "@radix-ui/react-separator"
 import { useEffect } from "react"
 import { RefreshCw } from "lucide-react"
 
+import { Title } from "@radix-ui/react-toast"
+import { SelectSeparator } from "@radix-ui/react-select"
+
+
 
 const formSchema = z.object({
     order: z.string().min(2).refine(
-        (value) => /^ODI-\d{5}$/.test(value),
+        (value) => /^ODC-\d{5}$/.test(value),
         {
-            message: "El código debe tener el formato ODI-XXXXX donde X son números"
+            message: "El código debe tener el formato ODC-XXXXX donde X son números"
         }
     ),
     estado: z.string().min(2),
-    tipoInspeccion: z.string().min(2),
-    fechaProgramada: z.string().min(2),
-    procesoProduccion: z.string().min(2),
-    especificacionProceso: z.string().min(2),
-    muestra: z.string().min(1),
     cliente: z.string().min(2),
-    fig: z.string().min(2),
     proyecto: z.string().min(2),
-    area: z.string().min(2),
+    fig: z.string().min(2),
+    codigoElemento: z.string().min(1),
     designacion: z.string().min(2),
-    norma: z.string().min(2),
-    lote: z.string().min(2),
-    nivelInspeccion: z.string().min(2),
-    planMuestra: z.string().min(2)
+    codigoAplicable: z.string().min(2),
+    centroTrabajo: z.string().min(2),
+    qc: z.string().min(2),
+    areaInspeccionada: z.string().min(2),
+    fechaPlanificada: z.string().min(2)
 })
 
 
@@ -77,12 +77,12 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
     // Función para incrementar manualmente el número
     const incrementOrderNumber = () => {
         try {
-            const currentNumber = parseInt(order.replace('ODI-', ''));
+            const currentNumber = parseInt(order.replace('ODC-',''));
             if (isNaN(currentNumber)) {
                 throw new Error("Número de orden actual no válido");
             }
             const nextNumber = String(currentNumber + 1).padStart(5, '0');
-            const fullOrder = `ODI-${nextNumber}`;
+            const fullOrder = `ODC-${nextNumber}`;
             setOrderNumber(fullOrder);
             form.setValue("order", fullOrder, { shouldValidate: true });
         } catch (error) {
@@ -98,26 +98,26 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
 
 
 
-        // Función para incrementar manualmente el número
-        const decrementOrderNumber = () => {
-            try {
-                const currentNumber = parseInt(order.replace('ODI-', ''));
-                if (isNaN(currentNumber)) {
-                    throw new Error("Número de orden actual no válido");
-                }
-                const nextNumber = String(currentNumber - 1).padStart(5, '0');
-                const fullOrder = `ODI-${nextNumber}`;
-                setOrderNumber(fullOrder);
-                form.setValue("order", fullOrder, { shouldValidate: true });
-            } catch (error) {
-                console.error("Error incrementando el número:", error);
-                toast({
-                    title: "Error",
-                    description: "No se pudo incrementar el número de orden",
-                    variant: "destructive"
-                });
+    // Función para incrementar manualmente el número
+    const decrementOrderNumber = () => {
+        try {
+            const currentNumber = parseInt(order.replace('ODC-', ''));
+            if (isNaN(currentNumber)) {
+                throw new Error("Número de orden actual no válido");
             }
-        };
+            const nextNumber = String(currentNumber - 1).padStart(5, '0');
+            const fullOrder = `ODC-${nextNumber}`;
+            setOrderNumber(fullOrder);
+            form.setValue("order", fullOrder, { shouldValidate: true });
+        } catch (error) {
+            console.error("Error incrementando el número:", error);
+            toast({
+                title: "Error",
+                description: "No se pudo incrementar el número de orden",
+                variant: "destructive"
+            });
+        }
+    };
 
 
 
@@ -151,7 +151,7 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
 
             console.log('Número obtenido:', nextNumber, 'Total órdenes:', response.data.totalOrders);
 
-            const fullOrder = `ODI-${nextNumber}`;
+            const fullOrder = `${nextNumber}`;
             setOrderNumber(fullOrder);
             form.setValue("order", fullOrder, { shouldValidate: true });
         } catch (error) {
@@ -187,20 +187,16 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
         defaultValues: {
             order: "",
             estado: "",
-            tipoInspeccion: "",
-            fechaProgramada: "",
-            procesoProduccion: "",
-            especificacionProceso: "",
-            muestra: "",
             cliente: "",
-            fig: "",
             proyecto: "",
-            area: "",
+            fig: "",
+            codigoElemento: "",
             designacion: "",
-            norma: "",
-            lote: "",
-            nivelInspeccion: "",
-            planMuestra: ""
+            codigoAplicable: "",
+            centroTrabajo: "",
+            qc: "",
+            areaInspeccionada: "",
+            fechaPlanificada: ""
         },
     })
 
@@ -212,7 +208,7 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
             setLoading(true);
 
             // Verificar que el número sea válido antes de continuar
-            if (!values.order || !/^ODI-\d{5}$/.test(values.order)) {
+            if (!values.order || !/^ODC-\d{5}$/.test(values.order)) {
                 throw new Error("Número de orden inválido");
             }
 
@@ -232,8 +228,8 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
             ////////////////////////AÑADIDO
 
             // Validar que el número de orden sea el siguiente en la secuencia
-            const lastOrderNumber = parseInt(checkExists.data.currentHighest.replace('ODI-', ''));
-            if (lastOrderNumber + 1 !== parseInt(values.order.replace('ODI-', ''))) {
+            const lastOrderNumber = parseInt(checkExists.data.currentHighest.replace('ODC-', ''));
+            if (lastOrderNumber + 1 !== parseInt(values.order.replace('ODC-', ''))) {
                 toast({
                     title: "Error",
                     description: "El número de orden debe ser el siguiente en la secuencia.",
@@ -250,7 +246,7 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
 
             // Llamar al flujo de Power Automate
             try {
-                const response = await fetch("https://prod-182.westus.logic.azure.com:443/workflows/da1509855ed8448f9701dc903e3b915b/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=zJinWQKzstenjkOmcUdmkZDOU7tVH38e0naJcoe4Ctc", {
+                const response = await fetch("#", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -258,20 +254,16 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
                     body: JSON.stringify({
                         order: values.order,
                         estado: values.estado,
-                        tipoInspeccion: values.tipoInspeccion,
-                        fechaProgramada: values.fechaProgramada,
-                        procesoProduccion: values.procesoProduccion,
-                        especificacionProceso: values.especificacionProceso,
-                        muestra: values.muestra,
                         cliente: values.cliente,
                         proyecto: values.proyecto,
                         fig: values.fig,
-                        area: values.area,
+                        codigoElemento: values.codigoElemento,
                         designacion: values.designacion,
-                        norma: values.norma,
-                        lote: values.lote,
-                        nivelInspeccion: values.nivelInspeccion,
-                        planMuestra: values.planMuestra
+                        codigoAplicable: values.codigoAplicable,
+                        centroTrabajo: values.centroTrabajo,
+                        qc: values.qc,
+                        areaInspeccionada: values.areaInspeccionada,
+                        fechaPlanificada: values.fechaPlanificada
                     }),
                 });
 
@@ -314,6 +306,13 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                         <div className="grid grid-cols-4 gap-3">
 
+                        <Title className="text-red-500">Información General de la Orden</Title>
+                        <SelectSeparator />
+                        <SelectSeparator />
+                        <SelectSeparator />
+
+
+
                             <FormField
                                 control={form.control}
                                 name="order"
@@ -323,7 +322,7 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
                                         <div className="flex items-center gap-2">
                                             <div className="flex-none">
                                                 <Input
-                                                    value="ODI-"
+                                                    value="ODC-"
                                                     readOnly
                                                     className="w-14 bg-gray-100"
                                                 />
@@ -402,137 +401,7 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
                                 )}
                             />
 
-                            <FormField
-                                control={form.control}
-                                name="tipoInspeccion"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Tipo de Inspección</FormLabel>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Seleccione el tipo" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="En Proceso">En Proceso</SelectItem>
-                                                <SelectItem value="Producto Terminado">Producto Terminado</SelectItem>
-                                            </SelectContent>
-                                        </Select>
 
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-
-                            <FormField
-                                control={form.control}
-                                name="nivelInspeccion"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Nivel de Inspección</FormLabel>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Seleccione el nivel aplicado" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="Normal">Normal</SelectItem>
-                                                <SelectItem value="Estricto">Estricto</SelectItem>
-                                                <SelectItem value="Reducido">Reducido</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-
-                            <FormField
-                                control={form.control}
-                                name="fechaProgramada"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Fecha</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                className="w-full p-2 border rounded pl-10"
-                                                placeholder="Seleccione una fecha"
-                                                type="date"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-
-                            <FormField
-                                control={form.control}
-                                name="procesoProduccion"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Proceso de Producción</FormLabel>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Seleccione el proceso" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="Abastecimiento">Abastecimiento</SelectItem>
-                                                <SelectItem value="Torres y Apernados">Torres y Apernados</SelectItem>
-                                                <SelectItem value="Armado y Soldadura">Armado y Soldadura</SelectItem>
-                                                <SelectItem value="Acabado Superficial">Acabado Superficial</SelectItem>
-                                                <SelectItem value="PMC">PMC</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-
-                            <FormField
-                                control={form.control}
-                                name="especificacionProceso"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Especificación del Proceso</FormLabel>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Seleccione la especificación" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="Inspección Grating">Inspección Grating</SelectItem>
-                                                <SelectItem value="Inspección Pasamanos">Inspección Pasamanos</SelectItem>
-                                                <SelectItem value="Inspección Bandejas Portacables">Inspección Bandejas Portacables</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
 
                             <FormField
                                 control={form.control}
@@ -542,6 +411,20 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
                                         <FormLabel>Cliente</FormLabel>
                                         <FormControl>
                                             <Input placeholder="Ej: SEDEMI" type="text" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="proyecto"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Proyecto</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Ej: 75XXXXX" type="text" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -562,43 +445,15 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
                                 )}
                             />
 
-
                             <FormField
                                 control={form.control}
-                                name="proyecto"
+                                name="codigoElemento"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Proyecto</FormLabel>
+                                        <FormLabel>Código del Elemento</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Ej: 75XXXXX" type="text" {...field} />
+                                            <Input placeholder="Ej: PMC00XXXX" type="text" {...field} />
                                         </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-
-                            <FormField
-                                control={form.control}
-                                name="area"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Área</FormLabel>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Seleccione el área" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="PMC PRODUCCIÓN">PMC PRODUCCIÓN</SelectItem>
-                                                <SelectItem value="PMC BODEGA">PMC BODEGA</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -618,14 +473,15 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
                                 )}
                             />
 
+
                             <FormField
                                 control={form.control}
-                                name="norma"
+                                name="codigoAplicable"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Norma Aplicable</FormLabel>
+                                        <FormLabel>Código Aplicable</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Ej: ASDXX" type="text" {...field} />
+                                            <Input placeholder="Ej: CD00XXXX" type="text" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -634,37 +490,22 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
 
                             <FormField
                                 control={form.control}
-                                name="lote"
+                                name="centroTrabajo"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Cantidad de Lote</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Ej: 0000" type="number" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="planMuestra"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Plan de Muestreo</FormLabel>
+                                        <FormLabel>Centro de Trabajo</FormLabel>
                                         <Select
                                             onValueChange={field.onChange}
                                             defaultValue={field.value}
                                         >
                                             <FormControl>
                                                 <SelectTrigger>
-                                                    <SelectValue placeholder="Seleccione el plan a utilizar" />
+                                                    <SelectValue placeholder="Seleccione el centro de trabajo" />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value="Simple">Simple</SelectItem>
-                                                <SelectItem value="Doble">Doble</SelectItem>
-                                                <SelectItem value="Múltiple">Múltiple</SelectItem>
+                                                <SelectItem value="Centro 1">Centro 1</SelectItem>
+                                                <SelectItem value="Centro 2">Centro 2</SelectItem>
                                             </SelectContent>
                                         </Select>
 
@@ -675,17 +516,67 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
 
                             <FormField
                                 control={form.control}
-                                name="muestra"
+                                name="qc"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Muestra</FormLabel>
+                                        <FormLabel>QC</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="2000" type="number" {...field} />
+                                            <Input placeholder="Ej: QC00" type="text" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
+
+
+
+                            <FormField
+                                control={form.control}
+                                name="areaInspeccionada"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Área Inspeccionada</FormLabel>
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Seleccione el área" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="Area 1">Area 1</SelectItem>
+                                                <SelectItem value="Area 2">Area 2</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="fechaPlanificada"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Fecha</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                className="w-full p-2 border rounded pl-10"
+                                                placeholder="Seleccione una fecha"
+                                                type="date"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+
+
 
 
                         </div>

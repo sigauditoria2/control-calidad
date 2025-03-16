@@ -50,85 +50,46 @@ export const columns: ColumnDef<Order>[] = [
         }
     },
     {
-        accessorKey: "tipoInspeccion",
-        header: "Tipo de Inspeccion",
-    },
-    {
-        accessorKey: "especificacionProceso",
-        header: "Especificación Proceso",
-    },
-    {
-        accessorKey: "fechaProgramada",
-        header: "Fecha Programada",
-    },
-    {
-        accessorKey: "lote",
-        header: "Lote",
-    },
-    {
         accessorKey: "cliente",
         header: "Cliente",
+    },
+    {
+        accessorKey: "proyecto",
+        header: "Proyecto",
     },
     {
         accessorKey: "fig",
         header: "Fig",
     },
     {
-        accessorKey: "area",
-        header: "Area",
+        accessorKey: "codigoElemento",
+        header: "Código del Elemento",
     },
     {
-        accessorKey: "nivelInspeccion",
-        header: "Nivel de Inspección",
-        cell: ({ row }) => {
-            const nivelInspeccion = row.getValue("nivelInspeccion") as string; // Aseguramos que 'estado' es un string
-
-            let backgroundColor = "";
-            let textColor = "text-white"; // Para el color del texto
-
-            // Asignamos el color de fondo y texto según el estado
-            if (nivelInspeccion === "Normal") {
-                backgroundColor = "bg-green-500"; // Verde
-            } else if (nivelInspeccion === "Estricto") {
-                backgroundColor = "bg-orange-500"; // Amarillo
-                textColor = "text-black"; // Texto negro para contraste
-            } else if (nivelInspeccion === "Reducido") {
-                backgroundColor = "bg-yellow-500"; // Rojo
-            }
-
-            return (
-                <div className={`py-1 px-3 rounded-lg ${backgroundColor} ${textColor}`}>
-                    {nivelInspeccion}
-                </div>
-            );
-        }
+        accessorKey: "designacion",
+        header: "Designación",
     },
     {
-        accessorKey: "planMuestra",
-        header: "Plan de Muestreo",
-        cell: ({ row }) => {
-            const planMuestra = row.getValue("planMuestra") as string; // Aseguramos que 'estado' es un string
-
-            let backgroundColor = "";
-            let textColor = "text-white"; // Para el color del texto
-
-            // Asignamos el color de fondo y texto según el estado
-            if (planMuestra === "Simple") {
-                backgroundColor = "bg-blue-200"; // Verde
-            } else if (planMuestra === "Doble") {
-                backgroundColor = "bg-blue-500"; // Amarillo
-                textColor = "text-black"; // Texto negro para contraste
-            } else if (planMuestra === "Multiple") {
-                backgroundColor = "bg-blue-800"; // Rojo
-            }
-
-            return (
-                <div className={`py-1 px-3 rounded-lg ${backgroundColor} ${textColor}`}>
-                    {planMuestra}
-                </div>
-            );
-        }
+        accessorKey: "codigoAplicable",
+        header: "Código Aplicable",
     },
+    {
+        accessorKey: "centroTrabajo",
+        header: "Centro de Trabajo",
+    },
+    {
+        accessorKey: "qc",
+        header: "QC",
+    },
+    {
+        accessorKey: "areaInspeccionada",
+        header: "Área Inspeccionada",
+    },
+    {
+        accessorKey: "fechaPlanificada",
+        header: "Fecha Planificada",
+    },
+
 
 
 

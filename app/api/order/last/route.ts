@@ -31,7 +31,7 @@ export async function GET() {
         // Verificar que el número generado no exista ya
         const existingOrder = await db.order.findFirst({
             where: {
-                order: `ODI-${formattedNumber}`
+                order: `ODC-${formattedNumber}`
             }
         });
 

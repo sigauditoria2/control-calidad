@@ -6,7 +6,7 @@ import { authMiddleware } from "@clerk/nextjs/server";
 export default authMiddleware({
   //publicRoutes: ["/api/uploadthing"], 
 
-  publicRoutes: ["/api/uploadthing", "/api/public/amef/create"], 
+ //publicRoutes: ["/api/uploadthing", "/api/public/amef/create"], 
 
   clockSkewInMs: 5 * 60 * 1000,
   

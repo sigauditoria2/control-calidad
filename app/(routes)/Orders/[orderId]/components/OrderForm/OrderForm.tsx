@@ -48,20 +48,16 @@ export function OrderForm(props: OrderFormsProps) {
         defaultValues: {
             order: order.order,
             estado: order.estado,
-            tipoInspeccion: order.tipoInspeccion,
-            fechaProgramada: order.fechaProgramada,
-            procesoProduccion: order.procesoProduccion,
-            especificacionProceso: order.especificacionProceso,
-            muestra: order.muestra,
             cliente: order.cliente,
-            fig: order.fig,
             proyecto: order.proyecto,
-            area: order.area,
+            fig: order.fig,
+            codigoElemento: order.codigoElemento,
             designacion: order.designacion,
-            norma: order.norma,
-            lote: order.lote,
-            nivelInspeccion: order.nivelInspeccion,
-            planMuestra: order.planMuestra
+            codigoAplicable: order.codigoAplicable,
+            centroTrabajo: order.centroTrabajo,
+            qc: order.qc,
+            areaInspeccionada: order.areaInspeccionada,
+            fechaPlanificada: order.fechaPlanificada
 
         }
     })
@@ -103,230 +99,41 @@ export function OrderForm(props: OrderFormsProps) {
                             <FormItem>
                                 <FormLabel>Nombre de la Orden</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Nombre de la orden" type="text"  readOnly {...field} />
+                                    <Input placeholder="Nombre de la orden" type="text" readOnly {...field} />
                                 </FormControl>
                             </FormItem>
                         )}
                     />
 
-                    {/* ESTADO */}
                     <FormField
                         control={form.control}
                         name="estado"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Estado de la Orden</FormLabel>
+                                <FormLabel>Estado</FormLabel>
                                 <Select
                                     onValueChange={field.onChange}
                                     defaultValue={field.value}
                                 >
-
                                     <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Seleccione el estado" />
                                         </SelectTrigger>
                                     </FormControl>
-
                                     <SelectContent>
                                         <SelectItem value="Abierto">Abierto</SelectItem>
                                         <SelectItem value="Cerrado">Cerrado</SelectItem>
                                         <SelectItem value="Cancelado">Cancelado</SelectItem>
                                     </SelectContent>
                                 </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
 
-                    {/* TIPO INSPECCION*/}
-                    <FormField
-                        control={form.control}
-                        name="tipoInspeccion"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Tipo de Inspección</FormLabel>
-                                <Select
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                >
-
-                                    <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Seleccione el tipo de Inspección" />
-                                        </SelectTrigger>
-                                    </FormControl>
-
-                                    <SelectContent>
-                                        <SelectItem value="En Proceso">En Proceso</SelectItem>
-                                        <SelectItem value="Producto Terminado">Producto Terminado</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    {/*NIVEL INSPECCION*/}
-                    <FormField
-                        control={form.control}
-                        name="nivelInspeccion"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Nivel de Inspección</FormLabel>
-                                <Select
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                >
-
-                                    <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Actualice el nivel de Inspección" />
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                        <SelectItem value="Normal">Normal</SelectItem>
-                                        <SelectItem value="Estricto">Estricto</SelectItem>
-                                        <SelectItem value="Reducido">Reducido</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-
-                    {/* FECHA PROGRAMADA */}
-                    <FormField
-                        control={form.control}
-                        name="fechaProgramada"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Fecha Programada</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="Fecha de registro" type="date" {...field} />
-                                </FormControl>
-                            </FormItem>
-                        )}
-                    />
-
-                    {/* PROCESO PRODUCCION */}
-                    <FormField
-                        control={form.control}
-                        name="procesoProduccion"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Proceso de Producción</FormLabel>
-                                <Select
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                >
-
-                                    <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Seleccione el proceso" />
-                                        </SelectTrigger>
-                                    </FormControl>
-
-                                    <SelectContent>
-                                        <SelectItem value="Abastecimiento">Abastecimiento</SelectItem>
-                                        <SelectItem value="Torres y Apernados">Torres y Apernados</SelectItem>
-                                        <SelectItem value="Armado y Soldadura">Armado y Soldadura</SelectItem>
-                                        <SelectItem value="Pintura">Pintura</SelectItem>
-                                        <SelectItem value="Galvanizado">Galvanizado</SelectItem>
-                                        <SelectItem value="PMC">PMC</SelectItem>
-                                    </SelectContent>
-                                </Select>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
 
 
-                    {/*ESPECIFICACION DE  PROCESO*/}
-                    <FormField
-                        control={form.control}
-                        name="especificacionProceso"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Especificación del Proceso</FormLabel>
-                                <Select
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                >
 
-                                    <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Seleccione el proceso" />
-                                        </SelectTrigger>
-                                    </FormControl>
-
-                                    <SelectContent>
-                                        <SelectItem value="Inspección Grating">Inspección Grating</SelectItem>
-                                        <SelectItem value="Inspección Pasamanos">Inspección Pasamanos</SelectItem>
-                                        <SelectItem value="Inspección Bandejas Portacables">Inspección Bandejas Portacables</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-
-                    {/* LOTE */}
-                    <FormField
-                        control={form.control}
-                        name="lote"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Cantidad de Lote</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="Ej: 1234" type="number" {...field} />
-                                </FormControl>
-                            </FormItem>
-                        )}
-                    />
-
-                    {/*PLAN MUESTRA*/}
-                    <FormField
-                        control={form.control}
-                        name="planMuestra"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Plan de Muestreo</FormLabel>
-                                <Select
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                >
-
-                                    <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Actualice el plan de muestra" />
-                                        </SelectTrigger>
-                                    </FormControl>
-
-                                    <SelectContent>
-                                        <SelectItem value="Simple">Simple</SelectItem>
-                                        <SelectItem value="Doble">Doble</SelectItem>
-                                        <SelectItem value="Múltiple">Múltiple</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-
-                    {/* MUESTRA */}
-                    <FormField
-                        control={form.control}
-                        name="muestra"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Cantidad de Muestra</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="Ej: 1234" type="number" {...field} />
-                                </FormControl>
-                            </FormItem>
-                        )}
-                    />
-
-                    {/* CLIENTE */}
                     <FormField
                         control={form.control}
                         name="cliente"
@@ -336,11 +143,25 @@ export function OrderForm(props: OrderFormsProps) {
                                 <FormControl>
                                     <Input placeholder="Ej: SEDEMI" type="text" {...field} />
                                 </FormControl>
+                                <FormMessage />
                             </FormItem>
                         )}
                     />
 
-                    {/* FIG */}
+                    <FormField
+                        control={form.control}
+                        name="proyecto"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Proyecto</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Ej: 75XXXXX" type="text" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
                     <FormField
                         control={form.control}
                         name="fig"
@@ -350,82 +171,141 @@ export function OrderForm(props: OrderFormsProps) {
                                 <FormControl>
                                     <Input placeholder="Ej: PMC00XXXX" type="text" {...field} />
                                 </FormControl>
-                            </FormItem>
-                        )}
-                    />
-
-
-                    {/* PROYECTO */}
-                    <FormField
-                        control={form.control}
-                        name="proyecto"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Proyecto</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="Ej: ASDF123" type="text" {...field} />
-                                </FormControl>
-                            </FormItem>
-                        )}
-                    />
-
-
-                    {/*AREA*/}
-                    <FormField
-                        control={form.control}
-                        name="area"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Área</FormLabel>
-                                <Select
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                >
-
-                                    <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Seleccione el área" />
-                                        </SelectTrigger>
-                                    </FormControl>
-
-                                    <SelectContent>
-                                        <SelectItem value="PMC PRODUCCIÓN">PMC PRODUCCIÓN</SelectItem>
-                                        <SelectItem value="PMC BODEGA">PMC BODEGA</SelectItem>
-                                    </SelectContent>
-                                </Select>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
 
-                    {/* DESIGNACION */}
+                    <FormField
+                        control={form.control}
+                        name="codigoElemento"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Código del Elemento</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Ej: PMC00XXXX" type="text" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
                     <FormField
                         control={form.control}
                         name="designacion"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Desginación</FormLabel>
+                                <FormLabel>Designación</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Ej: ASDF147" type="text" {...field} />
+                                    <Input placeholder="Ej: ASDXX" type="text" {...field} />
                                 </FormControl>
+                                <FormMessage />
                             </FormItem>
                         )}
                     />
 
 
-                    {/* NORMA */}
                     <FormField
                         control={form.control}
-                        name="norma"
+                        name="codigoAplicable"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Norma</FormLabel>
+                                <FormLabel>Código Aplicable</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Ej: AWS1.1" type="text" {...field} />
+                                    <Input placeholder="Ej: CD00XXXX" type="text" {...field} />
                                 </FormControl>
+                                <FormMessage />
                             </FormItem>
                         )}
                     />
+
+                    <FormField
+                        control={form.control}
+                        name="centroTrabajo"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Centro de Trabajo</FormLabel>
+                                <Select
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                >
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Seleccione el centro de trabajo" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="Centro 1">Centro 1</SelectItem>
+                                        <SelectItem value="Centro 2">Centro 2</SelectItem>
+                                    </SelectContent>
+                                </Select>
+
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="qc"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>QC</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Ej: QC00" type="text" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+
+
+                    <FormField
+                        control={form.control}
+                        name="areaInspeccionada"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Área Inspeccionada</FormLabel>
+                                <Select
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                >
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Seleccione el área" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="Area 1">Area 1</SelectItem>
+                                        <SelectItem value="Area 2">Area 2</SelectItem>
+                                    </SelectContent>
+                                </Select>
+
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="fechaPlanificada"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Fecha</FormLabel>
+                                <FormControl>
+                                    <Input
+                                        className="w-full p-2 border rounded pl-10"
+                                        placeholder="Seleccione una fecha"
+                                        type="date"
+                                        {...field}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
                 </div>
                 <Button type="submit">Actualizar</Button>
 

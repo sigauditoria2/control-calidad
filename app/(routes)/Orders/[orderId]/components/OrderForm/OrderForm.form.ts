@@ -3,19 +3,14 @@ import {z} from "zod";
 export const formSchema = z.object({
     order: z.string().min(2),
     estado: z.string().min(2),
-    tipoInspeccion: z.string().min(2),
-    fechaProgramada: z.string().min(2),
-    procesoProduccion: z.string().min(2),
-    especificacionProceso: z.string().min(2),
-    muestra: z.string().min(1),
     cliente: z.string().min(2),
-    fig: z.string().min(2),
     proyecto: z.string().min(2),
-    area: z.string().min(2),
+    fig: z.string().min(2),
+    codigoElemento: z.string().min(1),
     designacion: z.string().min(2),
-    norma: z.string().min(2),
-    lote: z.string().min(2),
-    nivelInspeccion: z.string().min(2),
-    planMuestra: z.string().min(2)
-
+    codigoAplicable: z.string().min(2),
+    centroTrabajo: z.string().min(2),
+    qc: z.string().min(2),
+    areaInspeccionada: z.string().min(2),
+    fechaPlanificada: z.string().min(2),
 })
