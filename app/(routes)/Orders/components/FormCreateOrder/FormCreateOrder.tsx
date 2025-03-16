@@ -47,12 +47,7 @@ import { SelectSeparator } from "@radix-ui/react-select"
 
 
 const formSchema = z.object({
-    order: z.string().min(2).refine(
-        (value) => /^ODC-\d{5}$/.test(value),
-        {
-            message: "El código debe tener el formato ODC-XXXXX donde X son números"
-        }
-    ),
+    order: z.string().min(2),
     estado: z.string().min(2),
     cliente: z.string().min(2),
     proyecto: z.string().min(2),
@@ -330,7 +325,7 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
                                             <FormControl>
                                                 <Input
                                                     readOnly
-                                                    value={field.value.replace('ODI-', '')}
+                                                    value={field.value.replace('ODC-', '')}
                                                     className="flex-1"
                                                 />
                                             </FormControl>

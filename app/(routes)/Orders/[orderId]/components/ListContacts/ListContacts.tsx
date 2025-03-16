@@ -19,7 +19,7 @@ export async function ListContacts(props: ListContactsProps) {
         return redirect("/")
     }
 
-    const contacts = await db.contact.findMany({
+    const contacts = await db.responsable.findMany({
         where: {
             order: {
                 id: order.id

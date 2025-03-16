@@ -31,7 +31,7 @@ export async function POST(
             return new NextResponse("Order no encontrada", {status: 404})
         }
 
-        const contact = await db.contact.create({
+        const contact = await db.responsable.create({
             data: {
                 orderId,
                 name: data.name,
