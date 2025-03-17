@@ -23,7 +23,7 @@ export async function GET(
         }
 
         // Luego obtener los contactos asociados a esa orden
-        const contacts = await db.responsable.findMany({
+        const contacts = await db.contact.findMany({
             where: {
                 orderId: order.id
             }

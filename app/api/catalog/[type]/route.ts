@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
-import {MedidasEnsayo, TareaRealizada, Prisma } from "@prisma/client";
+import {MedidasEnsayo, AccionImplementada, Prisma } from "@prisma/client";
 
 type CatalogModel = {
     findMany: (args: { orderBy: { descripcion: 'asc' | 'desc' } }) => Promise<any[]>;
@@ -11,8 +11,8 @@ const getModel = (type: string): CatalogModel | null => {
     switch (type) {
         case 'medidasEnsayo':
             return db.medidasEnsayo;
-        case 'tareaRealizada':
-            return db.tareaRealizada;
+        case 'accionImplementada':
+            return db.accionImplementada;
         default:
             return null;
     }

@@ -23,21 +23,6 @@ function getEstadoNPRStyle(npr: string) {
     return "";
 }
 
-
-// Función para determinar el color de la acción implementada
-function getAccionImplementadaStyle(accionImplementada: string) {
-    if (accionImplementada === "Aceptado") {
-        return "bg-green-500 text-white";
-    } else if (accionImplementada === "Rechazo") {
-        return "bg-yellow-500 text-white";
-    } else if (accionImplementada === "Corrige y continua proceso") { 
-        return "bg-orange-500 text-white";
-    } else if (accionImplementada === "Regresa al proceso anterior para corrección") {
-        return "bg-red-500 text-white";
-    }
-    return "";
-}
-
 export const columns: ColumnDef<Amef>[] = [
     {
         accessorKey: "order",
@@ -171,26 +156,13 @@ export const columns: ColumnDef<Amef>[] = [
         )
     },
     {
-        accessorKey: "tareaRealizada",
-        header: "Tarea Realizada",
-        cell: ({ row }) => (
-            <div className="bg-yellow-100 dark:bg-transparent p-2 rounded dark:text-white">
-                {row.getValue("tareaRealizada")}
-            </div>
-        )
-    },
-
-    {
         accessorKey: "accionImplementada",
         header: "Acción Implementada",
-        cell: ({ row }) => {
-            const accionImplementada = row.getValue("accionImplementada") as string;
-            return (
-                <div className={`px-2 py-1 rounded-full text-center ${getAccionImplementadaStyle(accionImplementada)}`}>
-                    {row.getValue("accionImplementada")}
-                </div>
-            );
-        }
+        cell: ({ row }) => (
+            <div className="bg-yellow-100 dark:bg-transparent p-2 rounded dark:text-white">
+                {row.getValue("accionImplementada")}
+            </div>
+        )
     },
     {
         accessorKey: "fechaValidacionCorreccion",

@@ -35,8 +35,7 @@ export const amefFormSchema = z.object({
     estadoNPR: z.string(),                      
     codigoColaboradorCT: z.string().min(2),         
     codigoResponsableInspeccion: z.string().min(2), 
-    accionImplementada: z.string().min(2),
-    tareaRealizada: z.string().min(2),          
+    accionImplementada: z.string().min(2),          
     fechaValidacionCorreccion: z.string().min(2),   
     costoReproceso: z.string().min(2)              
 

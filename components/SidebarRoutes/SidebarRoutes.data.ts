@@ -13,11 +13,13 @@ import {
 } from "lucide-react";
 
 export const dataGeneralSidebar = [
+    /*
     {
         icon: PanelsTopLeft,
         label: "Inicio",
         href: "/"
     },
+    */
     {
         icon: Building2,
         label: "Ordenes",
@@ -40,23 +42,27 @@ export const dataGeneralSidebar = [
         label: "Instrumentos",
         href: "/Tools"
     },
+    /*
     {
         icon: BookA,
         label: "Modos de Falla",
         href: "/ModosFalla"
     },
+    */
 
 ]
 
 export const dataToolsSidebar = [
+    /*
     {
         icon: CircleHelpIcon,
         label: "AMEF",
         href: "/AMEF"
     },
+    */
     {
         icon: BarChart4,
-        label: "Analytics",
+        label: "Análisis",
         href: "/Analytics"
     },
 ]

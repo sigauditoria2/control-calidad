@@ -105,6 +105,7 @@ export function OrderForm(props: OrderFormsProps) {
                         )}
                     />
 
+
                     <FormField
                         control={form.control}
                         name="estado"
@@ -305,6 +306,7 @@ export function OrderForm(props: OrderFormsProps) {
                             </FormItem>
                         )}
                     />
+
 
                 </div>
                 <Button type="submit">Actualizar</Button>

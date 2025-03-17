@@ -68,7 +68,6 @@ export async function POST(req: Request) {
                 codigoColaboradorCT: "",
                 codigoResponsableInspeccion: "",
                 accionImplementada: "",
-                tareaRealizada: "",
                 fechaValidacionCorreccion: "",
                 costoReproceso: ""
             }

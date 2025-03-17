@@ -13,4 +13,5 @@ export const formSchema = z.object({
     qc: z.string().min(2),
     areaInspeccionada: z.string().min(2),
     fechaPlanificada: z.string().min(2),
+
 })

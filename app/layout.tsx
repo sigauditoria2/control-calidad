@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { Noto_Sans_Display } from "next/font/google";
-
-
 import {
   ClerkProvider,
   SignInButton,
@@ -21,7 +19,7 @@ const noto = Noto_Sans_Display({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Centro de Datos | Control de Calidad",
-  description: "Centro de Datos | Control de Calidad",
+  description: "Control de Calidad",
 };
 
 export default function RootLayout({

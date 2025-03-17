@@ -78,7 +78,7 @@ interface CatalogItem {
     descripcion: string;
 }
 
-type CatalogField = "modoFallo" | "efecto" | "causaModoFallo" | "medidasEnsayo" | "tareaRealizada";
+type CatalogField = "modoFallo" | "efecto" | "causaModoFallo" | "medidasEnsayo" | "accionImplementada";
 
 interface ModoFallo {
     id: string;
@@ -130,7 +130,6 @@ export function AmefForm(props: AmefFormsProps) {
             codigoColaboradorCT: amef.codigoColaboradorCT,
             codigoResponsableInspeccion: amef.codigoResponsableInspeccion,
             accionImplementada: amef.accionImplementada,
-            tareaRealizada: amef.tareaRealizada ?? "",
             fechaValidacionCorreccion: amef.fechaValidacionCorreccion,
             costoReproceso: amef.costoReproceso
         }
@@ -194,7 +193,7 @@ export function AmefForm(props: AmefFormsProps) {
 
     // Filtrar modos de fallo cuando cambia el término de búsqueda
     useEffect(() => {
-        const filtered = modosFallo.filter(modo =>
+        const filtered = modosFallo.filter(modo => 
             modo.modoFallo.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setFilteredModosFallo(filtered);
@@ -367,9 +366,9 @@ export function AmefForm(props: AmefFormsProps) {
                                         </FormControl>
 
                                         <SelectContent>
-                                            <SelectItem value="Inspección Grating">Inspección Grating</SelectItem>
-                                            <SelectItem value="Inspección Pasamanos">Inspección Pasamanos</SelectItem>
-                                            <SelectItem value="Inspección Bandejas Portacables">Inspección Bandejas Portacables</SelectItem>
+                                        <SelectItem value="Inspección Grating">Inspección Grating</SelectItem>
+                                        <SelectItem value="Inspección Pasamanos">Inspección Pasamanos</SelectItem>
+                                        <SelectItem value="Inspección Bandejas Portacables">Inspección Bandejas Portacables</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     <FormMessage />
@@ -714,52 +713,24 @@ export function AmefForm(props: AmefFormsProps) {
                             }}
                         />
 
-                        {/* ACCIÓN IMPLEMENTADA */}
+
+
+                        {/* ACCION IMPLEMENTADA */}
                         <FormField
                             control={form.control}
                             name="accionImplementada"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Acción Implementada</FormLabel>
-                                    <Select
-                                        onValueChange={field.onChange}
-                                        defaultValue={field.value}
-                                    >
-
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Seleccione la acción implementada" />
-                                            </SelectTrigger>
-                                        </FormControl>
-
-                                        <SelectContent>
-                                            <SelectItem value="Corrige y continua proceso">Corrige y continua proceso</SelectItem>
-                                            <SelectItem value="Regresa al proceso anterior para corrección">Regresa al proceso anterior para corrección</SelectItem>
-                                            <SelectItem value="Rechazo">Rechazo</SelectItem>
-                                            <SelectItem value="Aceptado">Aceptado</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        {/* TAREA REALIZADA */}
-                        <FormField
-                            control={form.control}
-                            name="tareaRealizada"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Tarea Realizada</FormLabel>
                                     <div className="flex items-center gap-2">
                                         <FormControl>
-                                            <Input placeholder="Tarea Realizada" type="text" {...field} />
+                                            <Input placeholder="Acción Implementada" type="text" {...field} />
                                         </FormControl>
                                         <Button
                                             type="button"
                                             variant="ghost"
                                             size="icon"
-                                            onClick={() => openModal("tareaRealizada" as CatalogField)}
+                                            onClick={() => openModal("accionImplementada" as CatalogField)}
                                         >
                                             <Search className="h-4 w-4" />
                                         </Button>
@@ -835,7 +806,7 @@ export function AmefForm(props: AmefFormsProps) {
                 </Dialog>
             )}
 
-            {/* Modal original para MedidasEnsayo y TareaRealizada */}
+            {/* Modal original para MedidasEnsayo y AccionImplementada */}
             {showModal && modalType !== "modoFallo" && (
                 <Dialog open={showModal} onOpenChange={setShowModal}>
                     <DialogContent>

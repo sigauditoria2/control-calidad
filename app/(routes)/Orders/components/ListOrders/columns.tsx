@@ -90,9 +90,6 @@ export const columns: ColumnDef<Order>[] = [
         header: "Fecha Planificada",
     },
 
-
-
-
     {
         id: "actions",
         header: "Actions",

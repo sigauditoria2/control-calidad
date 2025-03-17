@@ -9,7 +9,7 @@ datasource db {
 }
 
 model Order {
-  id                String        @id @default(uuid())
+  id                String    @id @default(uuid())
   userId            String
   order             String
   estado            String
@@ -23,9 +23,10 @@ model Order {
   qc                String
   areaInspeccionada String
   fechaPlanificada  String
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
-  responsables      Responsable[]
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  contacts          Contact[]
+  tools             Tool[]
   events            Event[]
 }
 
@@ -40,7 +41,7 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
-model Responsable {
+model Contact {
   id        String   @id @default(uuid())
   orderId   String?
   name      String
@@ -51,6 +52,20 @@ model Responsable {
   updatedAt DateTime @updatedAt
   order     Order?   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   userId    String?
+
+  @@index([orderId])
+}
+
+model Tool {
+  id          String   @id @default(uuid())
+  orderId     String?
+  name        String
+  code        String
+  responsible String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  order       Order?   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  userId      String?
 
   @@index([orderId])
 }

@@ -12,7 +12,8 @@ export async function GET(req: Request) {
         // Obtener todas las órdenes sin filtrar por userId
         const orders = await db.order.findMany({
             include: {
-                responsables: true,
+                contacts: true,
+                tools: true,
                 events: true
             },
             orderBy: {
@@ -36,7 +37,7 @@ export async function POST(req: Request) {
             return new NextResponse("No autorizado", { status: 401 });
         }
 
-        if (!body.order || !/^ODC-\d{5}$/.test(body.order)) {
+        if (!body.order || !/^OCL-\d{5}$/.test(body.order)) {
             return new NextResponse("Formato de orden inválido", { status: 400 });
         }
 

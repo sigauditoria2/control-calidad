@@ -41,9 +41,9 @@ import { Separator } from "@radix-ui/react-separator"
 import { useEffect } from "react"
 import { RefreshCw } from "lucide-react"
 
+
 import { Title } from "@radix-ui/react-toast"
 import { SelectSeparator } from "@radix-ui/react-select"
-
 
 
 const formSchema = z.object({
@@ -72,12 +72,12 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
     // Función para incrementar manualmente el número
     const incrementOrderNumber = () => {
         try {
-            const currentNumber = parseInt(order.replace('ODC-',''));
+            const currentNumber = parseInt(order.replace('OCL-', ''));
             if (isNaN(currentNumber)) {
                 throw new Error("Número de orden actual no válido");
             }
             const nextNumber = String(currentNumber + 1).padStart(5, '0');
-            const fullOrder = `ODC-${nextNumber}`;
+            const fullOrder = `OCL-${nextNumber}`;
             setOrderNumber(fullOrder);
             form.setValue("order", fullOrder, { shouldValidate: true });
         } catch (error) {
@@ -96,12 +96,12 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
     // Función para incrementar manualmente el número
     const decrementOrderNumber = () => {
         try {
-            const currentNumber = parseInt(order.replace('ODC-', ''));
+            const currentNumber = parseInt(order.replace('OCL-', ''));
             if (isNaN(currentNumber)) {
                 throw new Error("Número de orden actual no válido");
             }
             const nextNumber = String(currentNumber - 1).padStart(5, '0');
-            const fullOrder = `ODC-${nextNumber}`;
+            const fullOrder = `OCL-${nextNumber}`;
             setOrderNumber(fullOrder);
             form.setValue("order", fullOrder, { shouldValidate: true });
         } catch (error) {
@@ -146,7 +146,7 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
 
             console.log('Número obtenido:', nextNumber, 'Total órdenes:', response.data.totalOrders);
 
-            const fullOrder = `${nextNumber}`;
+            const fullOrder = `OCL-${nextNumber}`;
             setOrderNumber(fullOrder);
             form.setValue("order", fullOrder, { shouldValidate: true });
         } catch (error) {
@@ -203,7 +203,7 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
             setLoading(true);
 
             // Verificar que el número sea válido antes de continuar
-            if (!values.order || !/^ODC-\d{5}$/.test(values.order)) {
+            if (!values.order || !/^OCL-\d{5}$/.test(values.order)) {
                 throw new Error("Número de orden inválido");
             }
 
@@ -223,8 +223,11 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
             ////////////////////////AÑADIDO
 
             // Validar que el número de orden sea el siguiente en la secuencia
-            const lastOrderNumber = parseInt(checkExists.data.currentHighest.replace('ODC-', ''));
-            if (lastOrderNumber + 1 !== parseInt(values.order.replace('ODC-', ''))) {
+            const lastOrderNumber = checkExists.data?.currentHighest
+                ? parseInt(checkExists.data.currentHighest.replace('OCL-', ''))
+                : 0; // Si no hay órdenes previas, asumimos que el primer número será 1
+
+            if (lastOrderNumber + 1 !== parseInt(values.order.replace('OCL-', ''))) {
                 toast({
                     title: "Error",
                     description: "El número de orden debe ser el siguiente en la secuencia.",
@@ -241,7 +244,7 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
 
             // Llamar al flujo de Power Automate
             try {
-                const response = await fetch("#", {
+                const response = await fetch("", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -301,11 +304,10 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                         <div className="grid grid-cols-4 gap-3">
 
-                        <Title className="text-red-500">Información General de la Orden</Title>
-                        <SelectSeparator />
-                        <SelectSeparator />
-                        <SelectSeparator />
-
+                            <Title className="text-red-500">Información General de la Orden</Title>
+                            <SelectSeparator />
+                            <SelectSeparator />
+                            <SelectSeparator />
 
 
                             <FormField
@@ -317,7 +319,7 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
                                         <div className="flex items-center gap-2">
                                             <div className="flex-none">
                                                 <Input
-                                                    value="ODC-"
+                                                    value="OCL-"
                                                     readOnly
                                                     className="w-14 bg-gray-100"
                                                 />
@@ -325,7 +327,7 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
                                             <FormControl>
                                                 <Input
                                                     readOnly
-                                                    value={field.value.replace('ODC-', '')}
+                                                    value={field.value.replace('OCL-', '')}
                                                     className="flex-1"
                                                 />
                                             </FormControl>
@@ -569,9 +571,6 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
                                     </FormItem>
                                 )}
                             />
-
-
-
 
 
                         </div>
