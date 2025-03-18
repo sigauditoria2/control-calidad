@@ -50,7 +50,7 @@ export default function SidebarRoutes({ isCollapsed }: SidebarRoutesProps) {
                     <Separator className="bg-slate-200 dark:bg-slate-700" />
 
                     <footer className="mt-3 p-3 text-center text-xs text-slate-500 dark:text-slate-400">
-                        2025. SIG
+                        2025. Control de Calidad
                     </footer>
                 </div>
             )}

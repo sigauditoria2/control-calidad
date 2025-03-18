@@ -24,6 +24,7 @@ export function FooterOrder(props: FooterOrderProps) {
             toast({
                 title: "Orden Eliminada"
             })
+            router.refresh()
             router.push("/Orders")
             
         } catch (error) {
