@@ -15,7 +15,8 @@ export async function GET() {
                 name: true,
                 rol: true,
                 code: true,
-                function: true
+                email: true,
+                //function: true
             },
             orderBy: {
                 name: 'asc'

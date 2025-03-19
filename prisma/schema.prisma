@@ -27,7 +27,6 @@ model Order {
   updatedAt         DateTime  @updatedAt
   contacts          Contact[]
   tools             Tool[]
-  events            Event[]
 }
 
 model User {
@@ -36,7 +35,8 @@ model User {
   name      String
   rol       String
   code      String
-  function  String
+  email     String
+  function  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -47,7 +47,8 @@ model Contact {
   name      String
   role      String
   code      String
-  function  String
+  email     String
+  function  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   order     Order?   @relation(fields: [orderId], references: [id], onDelete: Cascade)
@@ -70,17 +71,5 @@ model Tool {
   @@index([orderId])
 }
 
-model Event {
-  id         String   @id @default(uuid())
-  orderId    String
-  title      String
-  start      DateTime
-  allDay     Boolean
-  timeFormat String
-  createdAt  DateTime @default(now())
-  updateAt   DateTime @updatedAt
-  order      Order    @relation(fields: [orderId], references: [id])
-  userId     String?
 
-  @@index([orderId])
-}
+

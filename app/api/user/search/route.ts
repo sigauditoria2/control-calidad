@@ -23,7 +23,8 @@ export async function GET(req: Request) {
                 name: true,
                 rol: true,    // Asegúrate que estos nombres coincidan
                 code: true,   // exactamente con los campos en tu
-                function: true // tabla User
+                email: true, // tabla User
+                //function: true 
             }
         });
 

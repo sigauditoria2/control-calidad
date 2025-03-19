@@ -73,8 +73,8 @@ export const columns: ColumnDef<User>[] = [
         header: "Codigo de Colaborador",
     },
     {
-        accessorKey: "function",
-        header: "Función",
+        accessorKey: "email",
+        header: "Correo Electrónico",
     },
   
     {
