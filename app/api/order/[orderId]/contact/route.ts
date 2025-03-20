@@ -37,7 +37,8 @@ export async function POST(
                 name: data.name,
                 role: data.role,
                 code: data.code,
-                function: data.function,
+                email: data.email,
+                //function: data.function,
                 userId: data.userId
             }
         });

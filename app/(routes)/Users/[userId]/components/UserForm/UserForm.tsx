@@ -48,7 +48,8 @@ export function UserForm(props: UserFormsProps) {
             name: user.name,
             rol: user.rol,
             code: user.code,
-            function: user.function
+            email: user.email
+            //function: user.function,
 
         }
     })
@@ -115,32 +116,32 @@ export function UserForm(props: UserFormsProps) {
                                     </FormControl>
 
                                     <SelectContent>
-                                    <SelectItem value="Analista">Analista</SelectItem>
-                                            <SelectItem value="Armador">Armador</SelectItem>
-                                            <SelectItem value="Asistente">Asistente</SelectItem>
-                                            <SelectItem value="Auditor Externo">Auditor Externo</SelectItem>
-                                            <SelectItem value="Auditor Interno">Auditor Interno</SelectItem>
-                                            <SelectItem value="Auxiliar">Auxiliar</SelectItem>
-                                            <SelectItem value="Ayudante">Ayudante</SelectItem>
-                                            <SelectItem value="Chofer">Chofer</SelectItem>
-                                            <SelectItem value="Coordinador">Coordinador</SelectItem>
-                                            <SelectItem value="Especialista">Especialista</SelectItem>
-                                            <SelectItem value="Fiscalizador">Fiscalizador</SelectItem>
-                                            <SelectItem value="Gerente">Gerente</SelectItem>
-                                            <SelectItem value="Jefe">Jefe</SelectItem>
-                                            <SelectItem value="Médico">Médico</SelectItem>
-                                            <SelectItem value="Mensajero">Mensajero</SelectItem>
-                                            <SelectItem value="Montador">Montador</SelectItem>
-                                            <SelectItem value="Operador">Operador</SelectItem>
-                                            <SelectItem value="Paramédico">Paramédico</SelectItem>
-                                            <SelectItem value="Portero">Portero</SelectItem>
-                                            <SelectItem value="Soldador">Soldador</SelectItem>
-                                            <SelectItem value="Portero">Portero</SelectItem>
-                                            <SelectItem value="Supervisor">Supervisor</SelectItem>
-                                            <SelectItem value="Supervisor Operativo">Supervisor Operativo</SelectItem>
-                                            <SelectItem value="Técnico de Calidad y Procesos">Técnico de Calidad y Procesos</SelectItem>
-                                            <SelectItem value="Trabajador Social">Trabajador Social</SelectItem>
-                                            <SelectItem value="Otros">Otros</SelectItem>
+                                        <SelectItem value="Analista">Analista</SelectItem>
+                                        <SelectItem value="Armador">Armador</SelectItem>
+                                        <SelectItem value="Asistente">Asistente</SelectItem>
+                                        <SelectItem value="Auditor Externo">Auditor Externo</SelectItem>
+                                        <SelectItem value="Auditor Interno">Auditor Interno</SelectItem>
+                                        <SelectItem value="Auxiliar">Auxiliar</SelectItem>
+                                        <SelectItem value="Ayudante">Ayudante</SelectItem>
+                                        <SelectItem value="Chofer">Chofer</SelectItem>
+                                        <SelectItem value="Coordinador">Coordinador</SelectItem>
+                                        <SelectItem value="Especialista">Especialista</SelectItem>
+                                        <SelectItem value="Fiscalizador">Fiscalizador</SelectItem>
+                                        <SelectItem value="Gerente">Gerente</SelectItem>
+                                        <SelectItem value="Jefe">Jefe</SelectItem>
+                                        <SelectItem value="Médico">Médico</SelectItem>
+                                        <SelectItem value="Mensajero">Mensajero</SelectItem>
+                                        <SelectItem value="Montador">Montador</SelectItem>
+                                        <SelectItem value="Operador">Operador</SelectItem>
+                                        <SelectItem value="Paramédico">Paramédico</SelectItem>
+                                        <SelectItem value="Portero">Portero</SelectItem>
+                                        <SelectItem value="Soldador">Soldador</SelectItem>
+                                        <SelectItem value="Portero">Portero</SelectItem>
+                                        <SelectItem value="Supervisor">Supervisor</SelectItem>
+                                        <SelectItem value="Supervisor Operativo">Supervisor Operativo</SelectItem>
+                                        <SelectItem value="Técnico de Calidad y Procesos">Técnico de Calidad y Procesos</SelectItem>
+                                        <SelectItem value="Trabajador Social">Trabajador Social</SelectItem>
+                                        <SelectItem value="Otros">Otros</SelectItem>
                                     </SelectContent>
                                 </Select>
                                 <FormMessage />
@@ -149,34 +150,23 @@ export function UserForm(props: UserFormsProps) {
                     />
 
                     {/* TIPO INSPECCION*/}
+
                     <FormField
                         control={form.control}
-                        name="function"
+                        name="email"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Función:</FormLabel>
-                                <Select
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                >
-
-                                    <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Seleccione la función" />
-                                        </SelectTrigger>
-                                    </FormControl>
-
-                                    <SelectContent>
-                                        <SelectItem value="Responsable del área inspeccionada">Responsable del área inspeccionada</SelectItem>
-                                        <SelectItem value="Responsable de asistir">Responsable de asistir</SelectItem>
-                                        <SelectItem value="Responsable de inspeccionar">Responsable de inspeccionar</SelectItem>
-                                        <SelectItem value="Responsable de aprobar">Responsable de aprobar</SelectItem>
-                                    </SelectContent>
-                                </Select>
+                                <FormLabel>Correo Electrónico</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Ej: controlcalidad@sedemi.com" type="email" {...field} />
+                                </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
+
+
+
 
 
                     {/* LOTE */}

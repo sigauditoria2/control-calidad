@@ -45,7 +45,8 @@ const formSchema = z.object({
     name: z.string().min(2),
     rol: z.string().min(2),
     code: z.string().min(2),
-    function: z.string().min(2)
+    //function: z.string().min(2),
+    email: z.string().email("Por favor, ingresa un correo válido."),
 
 })
 
@@ -71,7 +72,8 @@ export function FormCreateUser(props: FormCreateUserProps) {
             name: "",
             rol: "",
             code: "",
-            function: ""
+            //function: "",
+            email: "",
         },
     })
 
@@ -190,36 +192,24 @@ export function FormCreateUser(props: FormCreateUserProps) {
                                 </FormItem>
                             )}
                         />
+                        
+                        {/*FUNCION DEL USUARIO*/}
 
                         <FormField
                             control={form.control}
-                            name="function"
+                            name="email"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Función</FormLabel>
-                                    <Select
-                                        onValueChange={field.onChange}
-                                        defaultValue={field.value}
-                                    >
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Seleccione la Función" />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectItem value="Responsable del área inspeccionada">Responsable del área inspeccionada</SelectItem>
-                                            <SelectItem value="Responsable de asistir">Responsable de asistir</SelectItem>
-                                            <SelectItem value="Responsable de inspeccionar">Responsable de inspeccionar</SelectItem>
-                                            <SelectItem value="Responsable de aprobar">Responsable de aprobar</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-
+                                    <FormLabel>Correo Electrónico</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Ej: controlcalidad@sedemi.com" type="email" {...field} />
+                                    </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
 
-            
+
 
                     </div>
                     <Button type="submit" disabled={!isValid}> Registrar Usuario</Button>

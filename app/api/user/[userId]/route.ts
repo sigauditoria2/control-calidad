@@ -34,7 +34,8 @@ export async function PATCH(
                 name: values.name,
                 role: values.rol,
                 code: values.code,
-                function: values.function
+                email: values.email
+                //function: values.function
             }
         });
 
