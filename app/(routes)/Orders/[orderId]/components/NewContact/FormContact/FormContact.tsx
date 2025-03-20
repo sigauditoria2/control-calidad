@@ -129,6 +129,55 @@ export function FormContact({ setOpen, orderId, onCompleted }: FormContactProps)
                 axios.post(`/api/order/${orderId}/contact`, contact)
             ));
 
+            // Obtener los datos de la orden
+            const orderResponse = await axios.get(`/api/order/${orderId}`);
+            const orderData = orderResponse.data;
+
+            // Llamar al flujo de Power Automate con todos los datos
+            try {
+                const response = await fetch("https://prod-79.westus.logic.azure.com:443/workflows/24637c86632545419d25a08b9b6b0d69/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=7wfkeNjxNE-gYqSFH6fMLXnebOkglzCMXdo3gEEz-O8", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        // Datos básicos de la orden
+                        order: orderData.order,
+                        estado: orderData.estado,
+                        cliente: orderData.cliente,
+                        proyecto: orderData.proyecto,
+                        fig: orderData.fig,
+                        codigoElemento: orderData.codigoElemento,
+                        designacion: orderData.designacion,
+                        codigoAplicable: orderData.codigoAplicable,
+                        centroTrabajo: orderData.centroTrabajo,
+                        qc: orderData.qc,
+                        areaInspeccionada: orderData.areaInspeccionada,
+                        fechaPlanificada: orderData.fechaPlanificada,
+
+                        // Datos de los responsables
+                        responsables: values.contacts.map(contact => ({
+                            nombre: contact.name,
+                            email: contact.email,
+                            rol: contact.role
+                        }))
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                toast({ title: "Datos enviados correctamente a Power Automate y SharePoint" });
+            } catch (error) {
+                console.error("Error en Power Automate:", error);
+                toast({
+                    title: "Error al enviar los datos a Power Automate",
+                    description: "Los responsables se registraron pero hubo un error al enviar los datos",
+                    variant: "destructive"
+                });
+            }
+
             toast({ title: "Responsables registrados exitosamente" });
 
             // Llamar a onCompleted antes de cerrar el modal
