@@ -219,13 +219,10 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
                 return;
             }
 
-
-            ////////////////////////AÑADIDO
-
             // Validar que el número de orden sea el siguiente en la secuencia
             const lastOrderNumber = checkExists.data?.currentHighest
                 ? parseInt(checkExists.data.currentHighest.replace('OCL-', ''))
-                : 0; // Si no hay órdenes previas, asumimos que el primer número será 1
+                : 0;
 
             if (lastOrderNumber + 1 !== parseInt(values.order.replace('OCL-', ''))) {
                 toast({
@@ -236,14 +233,30 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
                 return;
             }
 
-
+            // Crear la orden
             const responseOrder = await axios.post("/api/order", values);
             const orderId = responseOrder.data.id;
 
             toast({ title: "Orden Creada Correctamente" });
-            router.refresh()
+            router.refresh();
 
-            // Llamar al flujo de Power Automate
+            // Obtener los datos de responsables e instrumentos
+            let contacts = [];
+            let tools = [];
+            
+            try {
+                const [contactsResponse, toolsResponse] = await Promise.all([
+                    axios.get(`/api/order/${orderId}/contacts`),
+                    axios.get(`/api/order/${orderId}/tools`)
+                ]);
+                
+                contacts = contactsResponse.data || [];
+                tools = toolsResponse.data || [];
+            } catch (error) {
+                console.error("Error obteniendo datos adicionales:", error);
+            }
+
+            // Llamar al flujo de Power Automate con todos los datos
             try {
                 const response = await fetch("https://prod-79.westus.logic.azure.com:443/workflows/24637c86632545419d25a08b9b6b0d69/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=7wfkeNjxNE-gYqSFH6fMLXnebOkglzCMXdo3gEEz-O8", {
                     method: "POST",
@@ -251,6 +264,7 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
+                        // Datos básicos de la orden
                         order: values.order,
                         estado: values.estado,
                         cliente: values.cliente,
@@ -262,7 +276,21 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
                         centroTrabajo: values.centroTrabajo,
                         qc: values.qc,
                         areaInspeccionada: values.areaInspeccionada,
-                        fechaPlanificada: values.fechaPlanificada
+                        fechaPlanificada: values.fechaPlanificada,
+                        
+                        // Datos de los responsables
+                        responsables: contacts.map((contact: any) => ({
+                            nombre: contact.name,
+                            email: contact.email,
+                            rol: contact.role
+                        })),
+                        
+                        // Datos de los instrumentos
+                        instrumentos: tools.map((tool: any) => ({
+                            nombre: tool.name,
+                            codigo: tool.code,
+                            responsable: tool.responsible
+                        }))
                     }),
                 });
 
@@ -559,7 +587,7 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
                                 name="fechaPlanificada"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Fecha</FormLabel>
+                                        <FormLabel>Fecha Planificada</FormLabel>
                                         <FormControl>
                                             <Input
                                                 className="w-full p-2 border rounded pl-10"
