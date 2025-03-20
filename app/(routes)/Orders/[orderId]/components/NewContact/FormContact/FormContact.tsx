@@ -38,6 +38,7 @@ import { useState } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Title } from "@radix-ui/react-toast"
+import { SelectSeparator } from "@radix-ui/react-select"
 
 // Modificar el esquema para manejar múltiples responsables
 const formSchema = z.object({
@@ -51,11 +52,18 @@ const formSchema = z.object({
     })).length(3)
 });
 
+const ROLES = {
+    0: "Responsable de la Inspección",
+    1: "Responsable del Área Inspeccionada",
+    2: "Responsable de Aprobar la Inspección"
+};
+
 export function FormContact({ setOpen, orderId, onCompleted }: FormContactProps) {
     const [loading, setLoading] = useState(false);
     const [searchResults, setSearchResults] = useState<Array<any>>([]);
     const [showSearchModal, setShowSearchModal] = useState(false);
     const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
+    const [searchTerm, setSearchTerm] = useState("");
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -168,6 +176,28 @@ export function FormContact({ setOpen, orderId, onCompleted }: FormContactProps)
         setShowSearchModal(false);
     };
 
+    // Función para buscar usuarios en el modal
+    const handleSearch = async () => {
+        try {
+            setLoading(true);
+            if (!searchTerm) {
+                await fetchAllUsers();
+            } else {
+                const response = await axios.get(`/api/user/search?name=${searchTerm}`);
+                setSearchResults(Array.isArray(response.data) ? response.data : [response.data]);
+            }
+        } catch (error) {
+            console.error("Error en búsqueda:", error);
+            toast({
+                title: "Error en la búsqueda",
+                description: "No se encontró el usuario",
+                variant: "destructive"
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <DialogContent className="sm:max-w-[1200px]" onPointerDownOutside={e => e.preventDefault()}>
             <Form {...form}>
@@ -175,7 +205,6 @@ export function FormContact({ setOpen, orderId, onCompleted }: FormContactProps)
                     <Title className="text-red-500">Registro de Responsables asignados a la Inspección</Title>
 
                     <Table>
-
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Nombre</TableHead>
@@ -189,36 +218,35 @@ export function FormContact({ setOpen, orderId, onCompleted }: FormContactProps)
                             {form.watch('contacts').map((_, index) => (
                                 <TableRow key={index}>
                                     <TableCell>
-                                        <div className="flex items-center space-x-2">
-
-
-
-                                            <FormField
-                                                control={form.control}
-                                                name={`contacts.${index}.name`}
-                                                render={({ field }) => (
-                                                    <Input
-                                                        {...field}
-                                                        onChange={(e) => {
-                                                            field.onChange(e);
-                                                            searchUser(e.target.value, index);
-                                                        }}
-                                                        placeholder="Buscar usuario..."
-                                                    />
-                                                )}
-                                            />
-                                            <Button
-                                                type="button"
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => {
-                                                    setSelectedRowIndex(index);
-                                                    setShowSearchModal(true);
-                                                    fetchAllUsers();
-                                                }}
-                                            >
-                                                <Search className="h-4 w-4" />
-                                            </Button>
+                                        <div className="flex flex-col space-y-2">
+                                            <span className="text-sm font-medium text-blue-600">
+                                                {ROLES[index as keyof typeof ROLES]}
+                                            </span>
+                                            <div className="flex items-center space-x-2">
+                                                <FormField
+                                                    control={form.control}
+                                                    name={`contacts.${index}.name`}
+                                                    render={({ field }) => (
+                                                        <Input
+                                                            {...field}
+                                                            placeholder="Buscar usuario..."
+                                                            readOnly
+                                                        />
+                                                    )}
+                                                />
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => {
+                                                        setSelectedRowIndex(index);
+                                                        setShowSearchModal(true);
+                                                        fetchAllUsers();
+                                                    }}
+                                                >
+                                                    <Search className="h-4 w-4" />
+                                                </Button>
+                                            </div>
                                         </div>
                                     </TableCell>
                                     <TableCell>
@@ -239,7 +267,6 @@ export function FormContact({ setOpen, orderId, onCompleted }: FormContactProps)
                                             )}
                                         />
                                     </TableCell>
-
                                     <TableCell>
                                         <FormField
                                             control={form.control}
@@ -259,41 +286,49 @@ export function FormContact({ setOpen, orderId, onCompleted }: FormContactProps)
                 </form>
             </Form>
 
-            {showSearchModal && (
-                <Dialog open={showSearchModal} onOpenChange={setShowSearchModal}>
-                    <DialogContent onPointerDownOutside={e => e.preventDefault()}>
-                        <DialogHeader>
-                            <DialogTitle>Seleccionar Usuario Específico</DialogTitle>
-                        </DialogHeader>
-                        <div className="max-h-[800px] overflow-y-auto">
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Nombre</TableHead>
-                                        <TableHead>Rol</TableHead>
-                                        <TableHead>Código</TableHead>
-                                        <TableHead>Email</TableHead>
+            <Dialog open={showSearchModal} onOpenChange={setShowSearchModal}>
+                <DialogContent className="sm:max-w-[800px]" onPointerDownOutside={e => e.preventDefault()}>
+                    <DialogHeader>
+                        <DialogTitle>Seleccionar {ROLES[selectedRowIndex as keyof typeof ROLES]}</DialogTitle>
+                    </DialogHeader>
+                    <div className="flex gap-2 mb-4">
+                        <Input
+                            placeholder="Buscar por nombre..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                        <Button onClick={handleSearch} disabled={loading}>
+                            {loading ? "Buscando..." : "Buscar"}
+                        </Button>
+                    </div>
+                    <div className="max-h-[400px] overflow-y-auto">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Nombre</TableHead>
+                                    <TableHead>Rol</TableHead>
+                                    <TableHead>Código</TableHead>
+                                    <TableHead>Email</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {searchResults.map((user) => (
+                                    <TableRow
+                                        key={user.id}
+                                        className="cursor-pointer hover:bg-gray-100"
+                                        onClick={() => selectUser(user)}
+                                    >
+                                        <TableCell>{user.name}</TableCell>
+                                        <TableCell>{user.rol}</TableCell>
+                                        <TableCell>{user.code}</TableCell>
+                                        <TableCell>{user.email}</TableCell>
                                     </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {searchResults.map((user) => (
-                                        <TableRow
-                                            key={user.id}
-                                            className="cursor-pointer hover:bg-gray-100"
-                                            onClick={() => selectUser(user)}
-                                        >
-                                            <TableCell>{user.name}</TableCell>
-                                            <TableCell>{user.rol}</TableCell>
-                                            <TableCell>{user.code}</TableCell>
-                                            <TableCell>{user.email}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </div>
-                    </DialogContent>
-                </Dialog>
-            )}
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </DialogContent>
     );
 }

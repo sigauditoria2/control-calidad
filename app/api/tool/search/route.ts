@@ -4,17 +4,17 @@ import { NextResponse } from "next/server"
 export async function GET(req: Request) {
     try {
         const { searchParams } = new URL(req.url);
-        const code = searchParams.get("code");
+        const name = searchParams.get("name");
 
-        if (!code) {
-            return new NextResponse("Codigo requerido", { status: 400 });
+        if (!name) {
+            return new NextResponse("Nombre de instrumento requerido", { status: 400 });
         }
 
         // Modificamos la consulta para ser más flexible en la búsqueda
         const tool = await db.tool.findFirst({
             where: {
-                code: {
-                    contains: code,
+                name: {
+                    contains: name,
                     mode: 'insensitive'
                 }
             },
@@ -27,7 +27,7 @@ export async function GET(req: Request) {
         });
 
         if (!tool) {
-            return new NextResponse("Usuario no encontrado", { status: 404 });
+            return new NextResponse("Instrumento no encontrado", { status: 404 });
         }
 
         return NextResponse.json(tool);

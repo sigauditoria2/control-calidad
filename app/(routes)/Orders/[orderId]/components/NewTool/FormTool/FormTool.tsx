@@ -50,6 +50,7 @@ export function FormTool({ setOpenTools, orderId, onCompleted }: FormToolProps) 
     const [searchResults, setSearchResults] = useState<Array<any>>([]);
     const [showSearchModal, setShowSearchModal] = useState(false);
     const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
+    const [searchTerm, setSearchTerm] = useState("");
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -90,11 +91,11 @@ export function FormTool({ setOpenTools, orderId, onCompleted }: FormToolProps) 
     };
 
     // Función mejorada para buscar instrumento
-    const searchTool = async (code: string, index: number) => {
-        if (code.length < 2) return;
+    const searchTool = async (name: string, index: number) => {
+        if (name.length < 6) return;
 
         try {
-            const response = await axios.get(`/api/tool/search?code=${code}`);
+            const response = await axios.get(`/api/tool/search?name=${name}`);
             if (response.data) {
                 const tool = response.data;
                 form.setValue(`tools.${index}.userId`, tool.id);
@@ -136,6 +137,28 @@ export function FormTool({ setOpenTools, orderId, onCompleted }: FormToolProps) 
         form.setValue(`tools.${selectedRowIndex}.code`, tool.code);
         form.setValue(`tools.${selectedRowIndex}.responsible`, tool.responsible);
         setShowSearchModal(false);
+    };
+
+    // Función para buscar instrumentos en el modal
+    const handleSearch = async () => {
+        try {
+            setLoading(true);
+            if (!searchTerm) {
+                await fetchAllTools();
+            } else {
+                const response = await axios.get(`/api/tool/search?name=${searchTerm}`);
+                setSearchResults(Array.isArray(response.data) ? response.data : [response.data]);
+            }
+        } catch (error) {
+            console.error("Error en búsqueda:", error);
+            toast({
+                title: "Error en la búsqueda",
+                description: "No se encontró el instrumento",
+                variant: "destructive"
+            });
+        } finally {
+            setLoading(false);
+        }
     };
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -185,8 +208,8 @@ export function FormTool({ setOpenTools, orderId, onCompleted }: FormToolProps) 
                         <Table>
                             <TableHeader>
                                 <TableRow>
+                                    <TableHead>Instrumento</TableHead>
                                     <TableHead>Código</TableHead>
-                                    <TableHead>Nombre</TableHead>
                                     <TableHead>Responsable</TableHead>
                                     <TableHead>Acciones</TableHead>
                                 </TableRow>
@@ -198,15 +221,12 @@ export function FormTool({ setOpenTools, orderId, onCompleted }: FormToolProps) 
                                             <div className="flex items-center space-x-2">
                                                 <FormField
                                                     control={form.control}
-                                                    name={`tools.${index}.code`}
+                                                    name={`tools.${index}.name`}
                                                     render={({ field }) => (
                                                         <Input 
                                                             {...field}
-                                                            onChange={(e) => {
-                                                                field.onChange(e);
-                                                                searchTool(e.target.value, index);
-                                                            }}
-                                                            placeholder="Buscar por código..."
+                                                            placeholder="Nombre del instrumento"
+                                                            readOnly
                                                         />
                                                     )}
                                                 />
@@ -227,7 +247,7 @@ export function FormTool({ setOpenTools, orderId, onCompleted }: FormToolProps) 
                                         <TableCell>
                                             <FormField
                                                 control={form.control}
-                                                name={`tools.${index}.name`}
+                                                name={`tools.${index}.code`}
                                                 render={({ field }) => (
                                                     <Input {...field} readOnly />
                                                 )}
@@ -277,39 +297,47 @@ export function FormTool({ setOpenTools, orderId, onCompleted }: FormToolProps) 
                 </form>
             </Form>
 
-            {showSearchModal && (
-                <Dialog open={showSearchModal} onOpenChange={setShowSearchModal}>
-                    <DialogContent onPointerDownOutside={e => e.preventDefault()}>
-                        <DialogHeader>
-                            <DialogTitle>Seleccionar Instrumento</DialogTitle>
-                        </DialogHeader>
-                        <div className="max-h-[400px] overflow-y-auto">
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Código</TableHead>
-                                        <TableHead>Nombre</TableHead>
-                                        <TableHead>Responsable</TableHead>
+            <Dialog open={showSearchModal} onOpenChange={setShowSearchModal}>
+                <DialogContent className="sm:max-w-[800px]" onPointerDownOutside={e => e.preventDefault()}>
+                    <DialogHeader>
+                        <DialogTitle>Seleccionar Instrumento</DialogTitle>
+                    </DialogHeader>
+                    <div className="flex gap-2 mb-4">
+                        <Input
+                            placeholder="Buscar por nombre..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                        <Button onClick={handleSearch} disabled={loading}>
+                            {loading ? "Buscando..." : "Buscar"}
+                        </Button>
+                    </div>
+                    <div className="max-h-[400px] overflow-y-auto">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Nombre</TableHead>
+                                    <TableHead>Código</TableHead>
+                                    <TableHead>Responsable</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {searchResults.map((tool) => (
+                                    <TableRow
+                                        key={tool.id}
+                                        className="cursor-pointer hover:bg-gray-100"
+                                        onClick={() => selectTool(tool)}
+                                    >
+                                        <TableCell>{tool.name}</TableCell>
+                                        <TableCell>{tool.code}</TableCell>
+                                        <TableCell>{tool.responsible}</TableCell>
                                     </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {searchResults.map((tool) => (
-                                        <TableRow
-                                            key={tool.id}
-                                            className="cursor-pointer hover:bg-gray-100"
-                                            onClick={() => selectTool(tool)}
-                                        >
-                                            <TableCell>{tool.code}</TableCell>
-                                            <TableCell>{tool.name}</TableCell>
-                                            <TableCell>{tool.responsible}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </div>
-                    </DialogContent>
-                </Dialog>
-            )}
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </DialogContent>
     );
 }
