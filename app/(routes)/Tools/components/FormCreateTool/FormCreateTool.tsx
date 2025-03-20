@@ -39,6 +39,7 @@ import { useRouter } from "next/navigation"
 import { Separator } from "@radix-ui/react-separator"
 
 import { useEffect } from "react"
+import { Search } from "lucide-react"
 
 
 const formSchema = z.object({
@@ -58,6 +59,10 @@ export function FormCreateTool(props: FormCreateToolProps) {
     const router = useRouter()
 
     const [photoUploaded, setPhotoUploaded] = useState(false)
+    const [isUserSearchOpen, setIsUserSearchOpen] = useState(false)
+    const [searchTerm, setSearchTerm] = useState("")
+    const [users, setUsers] = useState<any[]>([])
+    const [loading, setLoading] = useState(false)
 
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -70,6 +75,28 @@ export function FormCreateTool(props: FormCreateToolProps) {
     })
 
     const { isValid } = form.formState
+
+    const searchUsers = async (term: string) => {
+        if (!term) return
+        setLoading(true)
+        try {
+            const response = await axios.get(`/api/user/search?name=${term}`)
+            setUsers(Array.isArray(response.data) ? response.data : [response.data])
+        } catch (error) {
+            console.error("Error buscando usuarios:", error)
+            toast({
+                title: "Error al buscar usuarios",
+                variant: "destructive"
+            })
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const selectUser = (userName: string) => {
+        form.setValue("responsible", userName)
+        setIsUserSearchOpen(false)
+    }
 
     // 2. Define a submit handler.
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -137,9 +164,56 @@ export function FormCreateTool(props: FormCreateToolProps) {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Responsable del Instrumento</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Ej: Nombre del Colaborador" type="text" {...field} />
-                                    </FormControl>
+                                    <div className="flex gap-2">
+                                        <FormControl>
+                                            <Input placeholder="Ej: Nombre del Colaborador" type="text" {...field} />
+                                        </FormControl>
+                                        <Dialog open={isUserSearchOpen} onOpenChange={setIsUserSearchOpen}>
+                                            <DialogTrigger asChild>
+                                                <Button variant="outline" size="icon">
+                                                    <Search className="h-4 w-4" />
+                                                </Button>
+                                            </DialogTrigger>
+                                            <DialogContent>
+                                                <DialogHeader>
+                                                    <DialogTitle>Buscar Usuario</DialogTitle>
+                                                    <DialogDescription>
+                                                        Busca y selecciona un usuario responsable
+                                                    </DialogDescription>
+                                                </DialogHeader>
+                                                <div className="flex flex-col gap-4">
+                                                    <div className="flex gap-2">
+                                                        <Input
+                                                            placeholder="Buscar por nombre..."
+                                                            value={searchTerm}
+                                                            onChange={(e) => setSearchTerm(e.target.value)}
+                                                        />
+                                                        <Button onClick={() => searchUsers(searchTerm)}>
+                                                            Buscar
+                                                        </Button>
+                                                    </div>
+                                                    <div className="max-h-[300px] overflow-y-auto">
+                                                        {loading ? (
+                                                            <div>Cargando...</div>
+                                                        ) : (
+                                                            <div className="space-y-2">
+                                                                {users.map((user) => (
+                                                                    <div
+                                                                        key={user.id}
+                                                                        className="p-2 hover:bg-gray-100 cursor-pointer rounded"
+                                                                        onClick={() => selectUser(user.name)}
+                                                                    >
+                                                                        <p className="font-medium">{user.name}</p>
+                                                                        <p className="text-sm text-gray-500">{user.email}</p>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </DialogContent>
+                                        </Dialog>
+                                    </div>
                                     <FormMessage />
                                 </FormItem>
                             )}
