@@ -9,12 +9,34 @@ export async function GET(req: Request) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        // Obtener todas las órdenes sin filtrar por userId
+        // Obtener el ID de la orden de la URL si existe
+        const url = new URL(req.url);
+        const orderId = url.pathname.split('/').pop();
+
+        // Si hay un ID específico, obtener esa orden
+        if (orderId && orderId !== 'order') {
+            const order = await db.order.findUnique({
+                where: {
+                    id: orderId
+                },
+                include: {
+                    contacts: true,
+                    tools: true
+                }
+            });
+
+            if (!order) {
+                return new NextResponse("Orden no encontrada", { status: 404 });
+            }
+
+            return NextResponse.json(order);
+        }
+
+        // Si no hay ID específico, obtener todas las órdenes
         const orders = await db.order.findMany({
             include: {
                 contacts: true,
-                tools: true,
-                events: true
+                tools: true
             },
             orderBy: {
                 createdAt: 'desc'

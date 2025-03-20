@@ -91,7 +91,7 @@ export async function DELETE(req: Request, {params}: {params: {orderId: string}}
 
         // Finalmente, notificar a Power Automate para eliminar el registro en SharePoint
         try {
-            const response = await fetch("https://prod-182.westus.logic.azure.com:443/workflows/da1509855ed8448f9701dc903e3b915b/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=zJinWQKzstenjkOmcUdmkZDOU7tVH38e0naJcoe4Ctc", {
+            const response = await fetch("https://prod-79.westus.logic.azure.com:443/workflows/24637c86632545419d25a08b9b6b0d69/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=7wfkeNjxNE-gYqSFH6fMLXnebOkglzCMXdo3gEEz-O8", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -113,5 +113,36 @@ export async function DELETE(req: Request, {params}: {params: {orderId: string}}
     } catch (error) {
         console.log("[DELETE ORDER ID]", error)
         return new NextResponse("Error Interno", {status: 500})
+    }
+}
+
+export async function GET(
+    req: Request,
+    { params }: { params: { orderId: string } }
+) {
+    try {
+        const { userId } = auth();
+        if (!userId) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        const order = await db.order.findUnique({
+            where: {
+                id: params.orderId
+            },
+            include: {
+                contacts: true,
+                tools: true
+            }
+        });
+
+        if (!order) {
+            return new NextResponse("Orden no encontrada", { status: 404 });
+        }
+
+        return NextResponse.json(order);
+    } catch (error) {
+        console.error("[ORDER_GET]", error);
+        return new NextResponse("Error interno", { status: 500 });
     }
 }
