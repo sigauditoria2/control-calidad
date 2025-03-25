@@ -10,7 +10,6 @@ export const formSchema = z.object({
     designacion: z.string().min(2),
     codigoAplicable: z.string().min(2),
     centroTrabajo: z.string().min(2),
-    qc: z.string().min(2),
     areaInspeccionada: z.string().min(2),
     fechaPlanificada: z.string().min(2),
 

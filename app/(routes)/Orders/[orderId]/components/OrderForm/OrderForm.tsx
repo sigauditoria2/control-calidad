@@ -55,7 +55,6 @@ export function OrderForm(props: OrderFormsProps) {
             designacion: order.designacion,
             codigoAplicable: order.codigoAplicable,
             centroTrabajo: order.centroTrabajo,
-            qc: order.qc,
             areaInspeccionada: order.areaInspeccionada,
             fechaPlanificada: order.fechaPlanificada
 
@@ -245,21 +244,6 @@ export function OrderForm(props: OrderFormsProps) {
                             </FormItem>
                         )}
                     />
-
-                    <FormField
-                        control={form.control}
-                        name="qc"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>QC</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="Ej: QC00" type="text" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-
 
 
                     <FormField
