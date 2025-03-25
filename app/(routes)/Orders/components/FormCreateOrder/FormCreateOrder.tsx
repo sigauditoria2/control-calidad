@@ -156,7 +156,6 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
     };
 
 
-
     {/*Crear una función para obtener el último número de orden*/ }
     const fetchNextOrderNumber = async () => {
         try {
@@ -301,6 +300,7 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
             setLoading(false);
         }
     }
+
 
     return (
         <div>
@@ -522,7 +522,7 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
                                                 setSelectedProceso(value);
                                                 // Resetear la especificación cuando cambia el proceso
                                                 //form.setValue("especificacionProceso", "");
-                                                form.setValue("areaInspeccionada", "");
+                                                form.setValue("centroTrabajo", "");
                                             }}
                                             defaultValue={field.value}
                                         >

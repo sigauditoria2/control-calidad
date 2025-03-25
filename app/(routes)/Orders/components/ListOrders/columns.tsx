@@ -78,10 +78,6 @@ export const columns: ColumnDef<Order>[] = [
         header: "Centro de Trabajo",
     },
     {
-        accessorKey: "responsableInspeccion",
-        header: "QC",
-    },
-    {
         accessorKey: "areaInspeccionada",
         header: "Área Inspeccionada",
     },
