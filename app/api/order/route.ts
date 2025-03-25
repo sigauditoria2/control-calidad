@@ -86,7 +86,6 @@ export async function POST(req: Request) {
                 designacion: body.designacion,
                 codigoAplicable: body.codigoAplicable,
                 centroTrabajo: body.centroTrabajo,
-                qc: body.qc,
                 areaInspeccionada: body.areaInspeccionada,
                 fechaPlanificada: body.fechaPlanificada,
             }

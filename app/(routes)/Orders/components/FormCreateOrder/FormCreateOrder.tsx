@@ -56,10 +56,51 @@ const formSchema = z.object({
     designacion: z.string().min(2),
     codigoAplicable: z.string().min(2),
     centroTrabajo: z.string().min(2),
-    qc: z.string().min(2),
     areaInspeccionada: z.string().min(2),
     fechaPlanificada: z.string().min(2)
 })
+
+interface ProcesoAreas {
+    [key: string]: string[];
+}
+
+
+// Opciones para área según el proceso de producción
+const PROCESO_AREAS: ProcesoAreas = {
+    "Abastecimiento": [
+        "Corte Termico / CNC",
+        "Corte por Sierra",
+        "Corte por Cizalla",
+        "Doblado",
+        "Perforación Manual",
+        "Rolado",
+        "Biselado"
+    ],
+    "Torres y Apernados": [
+        "Corte Termico / CNC",
+        "Corte por Sierra",
+        "Corte por Cizalla",
+        "Doblado",
+        "Perforación Manual",
+        "Rolado",
+        "Biselado"
+    ],
+    "Armado y Soldadura": [
+        "A&S (LINEA 1)",
+        "A&S (LINEA 2)",
+        "A&S (LINEA 3)",
+        "A&S (LINEA 4)",
+        "A&S (LINEA 5)"
+    ],
+    "Acabado Superficial": [
+        "Pintura",
+        "Galvanizado"
+    ],
+    "PMC": [
+        "PMC PRODUCCIÓN",
+        "PMC BODEGA"
+    ]
+};
 
 
 
@@ -113,9 +154,6 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
             });
         }
     };
-
-
-
 
 
 
@@ -176,6 +214,10 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
 
     const [photoUploaded, setPhotoUploaded] = useState(false)
 
+    const [selectedProceso, setSelectedProceso] = useState<string>("");
+    const [selectedEspecificacion, setSelectedEspecificacion] = useState<string>("");
+    const [visibleFields, setVisibleFields] = useState<string[]>([]);
+
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -189,7 +231,6 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
             designacion: "",
             codigoAplicable: "",
             centroTrabajo: "",
-            qc: "",
             areaInspeccionada: "",
             fechaPlanificada: ""
         },
@@ -448,75 +489,6 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
                                     </FormItem>
                                 )}
                             />
-
-                            <FormField
-                                control={form.control}
-                                name="centroTrabajo"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Centro de Trabajo</FormLabel>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Seleccione el centro de trabajo" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="Centro 1">Centro 1</SelectItem>
-                                                <SelectItem value="Centro 2">Centro 2</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="qc"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>QC</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Ej: QC00" type="text" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-
-
-                            <FormField
-                                control={form.control}
-                                name="areaInspeccionada"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Área Inspeccionada</FormLabel>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Seleccione el área" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="Area 1">Area 1</SelectItem>
-                                                <SelectItem value="Area 2">Area 2</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
                             <FormField
                                 control={form.control}
                                 name="fechaPlanificada"
@@ -536,6 +508,74 @@ export function FormCreateOrder({ setOpenModalCreate, setOpen, setOrderId, onOrd
                                 )}
                             />
 
+                            <FormField
+                                control={form.control}
+                                name="areaInspeccionada"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Área Inspeccionada</FormLabel>
+                                        <Select
+                                            //onValueChange={field.onChange}
+                                            //defaultValue={field.value}
+                                            onValueChange={(value) => {
+                                                field.onChange(value);
+                                                setSelectedProceso(value);
+                                                // Resetear la especificación cuando cambia el proceso
+                                                //form.setValue("especificacionProceso", "");
+                                                form.setValue("areaInspeccionada", "");
+                                            }}
+                                            defaultValue={field.value}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Seleccione el área" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="Abastecimiento">Abastecimiento</SelectItem>
+                                                <SelectItem value="Torres y Apernados">Torres y Apernados</SelectItem>
+                                                <SelectItem value="Armado y Soldadura">Armado y Soldadura</SelectItem>
+                                                <SelectItem value="Acabado Superficial">Acabado Superficial</SelectItem>
+                                                <SelectItem value="PMC">PMC</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="centroTrabajo"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Centro de Trabajo</FormLabel>
+                                        <Select
+                                            //onValueChange={field.onChange}
+                                            //defaultValue={field.value}
+                                            onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                            disabled={!selectedProceso}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Seleccione el centro de trabajo" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {selectedProceso && PROCESO_AREAS[selectedProceso as keyof typeof PROCESO_AREAS]?.map((areaInspeccionada: string) => (
+                                                    <SelectItem key={areaInspeccionada} value={areaInspeccionada}>
+                                                        {areaInspeccionada}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
                         </div>
                         <Button type="submit" disabled={!isValid || loading}> Siguiente </Button>

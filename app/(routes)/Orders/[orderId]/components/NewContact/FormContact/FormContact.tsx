@@ -151,7 +151,6 @@ export function FormContact({ setOpen, orderId, onCompleted }: FormContactProps)
                         designacion: orderData.designacion,
                         codigoAplicable: orderData.codigoAplicable,
                         centroTrabajo: orderData.centroTrabajo,
-                        qc: orderData.qc,
                         areaInspeccionada: orderData.areaInspeccionada,
                         fechaPlanificada: orderData.fechaPlanificada,
 

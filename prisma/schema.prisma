@@ -20,7 +20,6 @@ model Order {
   designacion       String
   codigoAplicable   String
   centroTrabajo     String
-  qc                String
   areaInspeccionada String
   fechaPlanificada  String
   createdAt         DateTime  @default(now())
